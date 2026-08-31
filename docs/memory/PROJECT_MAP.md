@@ -47,7 +47,29 @@ General frontend delivery plan:
 
 ## Important Implementation Areas
 
-No application implementation exists yet. The approved structure anticipates:
+Foundation paths now in place:
+
+```text
+src/app/                 App Router layout, routes, and client providers
+src/app/providers.tsx    TanStack Query provider
+src/components/ui/       Shared project-owned primitives
+src/styles/globals.css   Tailwind import and semantic design tokens
+```
+
+Home Hero implementation:
+
+```text
+src/components/home/hero-vehicle-scanner.tsx  Hero composition, scanner, and upload interaction
+src/components/home/three-d-vehicle-scene.tsx Lazy WebGL scene and isolated interim vehicle
+src/components/home/scene-fallback.tsx        Non-WebGL/loading fallback
+src/components/home/model-vision-comparison.tsx Reality / Model View comparison interaction
+src/components/home/human-in-loop-demo.tsx    Plate-box and OCR correction demo
+src/features/upload/vehicle-image.ts          Client-side supported MIME boundary
+public/images/model-vision-vehicle.png         Project-owned real-world comparison photo
+public/og.png                                  Home social preview
+```
+
+Reserved implementation boundaries:
 
 ```text
 src/app/                 Routes and application shell

@@ -8,16 +8,16 @@ Area:
 Cross-page integration and production assets
 
 Problem:
-The repository has no backend API contract or production assets. Endpoint and payload details, supported body classes, upload/retention rules, quota behavior on failed analyses, coordinate convention, 3D vehicle asset, and palette reference asset are not yet available.
+The repository has no backend API contract or approved production assets. Endpoint and payload details, supported body classes, upload/retention rules, quota behavior on failed analyses, coordinate convention, production 3D vehicle asset, and palette reference asset are not yet available.
 
 Current understanding:
-The frontend technology and product behavior are approved, but live integration behavior cannot be finalized without these inputs.
+The frontend technology and product behavior are approved, but live integration behavior cannot be finalized without these inputs. The Home Hero uses an isolated project-owned procedural vehicle until the production GLB is supplied.
 
 Do not:
 Invent authoritative API values, quota policy, body classes, or coordinate semantics.
 
 Next investigation:
-Obtain the backend contract and asset decisions before Phase 2 live integration work.
+Obtain the backend contract before Phase 2 live integration work and replace the interim Hero vehicle after the production GLB is approved.
 
 ## Rules
 

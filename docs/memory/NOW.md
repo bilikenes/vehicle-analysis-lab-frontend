@@ -4,7 +4,7 @@ Last updated: 2026-09-01
 
 ## Current Phase
 
-Planning complete; frontend implementation has not started.
+Phase 1 — Application Foundation is complete. Phase 3 — Home Experience is in progress while Phase 2 live-integration inputs remain pending.
 
 ## Product Definition Status
 
@@ -16,7 +16,7 @@ Completed and approved:
 
 ## Current Objective
 
-Execute the active frontend implementation plan when explicitly requested, following the approved documents.
+Complete the integration-independent Home experience with the return-to-upload CTA and compact footer.
 
 ## Approved Page Flow
 
@@ -46,11 +46,17 @@ Execute the active frontend implementation plan when explicitly requested, follo
 
 ## Next Milestone
 
-Resolve the integration and asset gates in the active plan, then initialize the approved frontend application structure and dependencies after an explicit implementation request.
+Complete the remaining Home sections and replace the isolated interim 3D vehicle when the approved production GLB becomes available.
 
 ## Active Work
 
-The general execution plan is active at `docs/plans/active/frontend-implementation-plan.md`. Repository contains documentation bootstrap and an empty `src/` directory only.
+The general execution plan is active at `docs/plans/active/frontend-implementation-plan.md`.
+
+The Home Hero is implemented with a lazy client-loaded React Three Fiber scene, a one-time scanner sequence, restrained pointer response, reduced-motion behavior, an accessible file picker, drag/drop feedback, and controlled MIME validation. It currently uses an isolated project-owned interim 3D vehicle because the production GLB is pending.
+
+The Model View section is implemented with an original real-world vehicle photograph, a direct draggable comparison divider, vehicle and plate overlays, OCR/body-type interpretation, and pointer, touch, and keyboard support.
+
+The Human in the Loop demo is implemented with an intentionally imperfect plate box and OCR value, direct move/resize interaction, keyboard adjustments, a live plate crop, reset behavior, validation, and restrained feedback confirmation.
 
 ## Do Not Revisit Without Explicit Reason
 

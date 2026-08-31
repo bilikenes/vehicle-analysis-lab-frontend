@@ -4,6 +4,13 @@ Status: Active
 
 Last updated: 2026-09-01
 
+## Progress
+
+- Completed: Phase 1 — Application Foundation
+- Pending: Phase 2 live integration boundary requires the inputs listed below.
+- In progress: Phase 3 — Home Experience; the Hero, Model View comparison, and Human in the Loop demo are implemented.
+- Available next: Add the return-to-upload CTA and compact footer, then run the Phase 3 acceptance review.
+
 ## Purpose
 
 Deliver the three approved product experiences without changing the page specifications or the Frontend Technology Contract. This plan is an execution guide; the source-of-truth documents remain authoritative.
