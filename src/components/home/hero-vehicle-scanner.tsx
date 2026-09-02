@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import {
   ArrowUpRight,
   Check,
@@ -8,10 +9,17 @@ import {
   ScanLine,
   Upload,
 } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
-  type DragEvent,
+  AnimatePresence,
+  motion,
+  type MotionStyle,
+  useMotionValue,
+  useReducedMotion,
+} from "motion/react";
+import {
   type ChangeEvent,
+  type DragEvent,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -19,6 +27,7 @@ import {
 
 import { SceneFallback } from "@/components/home/scene-fallback";
 import { isSupportedVehicleImage } from "@/features/upload/vehicle-image";
+import type { ScreenBounds } from "@/lib/geometry/project-mesh-bounds";
 
 const ThreeDVehicleScene = dynamic(
   () => import("@/components/home/three-d-vehicle-scene"),
@@ -37,10 +46,12 @@ function DetectionTag({
   active,
   children,
   className,
+  style,
 }: {
   active: boolean;
   children: React.ReactNode;
   className: string;
+  style?: MotionStyle;
 }) {
   return (
     <motion.div
@@ -48,6 +59,7 @@ function DetectionTag({
       animate={{ opacity: active ? 1 : 0, y: active ? 0 : 5 }}
       className={`absolute z-20 border border-border bg-background/90 px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-[0.14em] text-primary-text backdrop-blur-sm ${className}`}
       initial={false}
+      style={style}
       transition={{ duration: 0.28 }}
     >
       {children}
@@ -59,6 +71,12 @@ export function HeroVehicleScanner() {
   const reduceMotion = useReducedMotion() ?? false;
   const inputRef = useRef<HTMLInputElement>(null);
   const dragDepth = useRef(0);
+  const vehicleBoxLeft = useMotionValue("14%");
+  const vehicleBoxTop = useMotionValue("31%");
+  const vehicleBoxWidth = useMotionValue("72%");
+  const vehicleBoxHeight = useMotionValue("38%");
+  const vehicleTagLeft = useMotionValue("14%");
+  const vehicleTagTop = useMotionValue("25%");
   const [scanStep, setScanStep] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [uploadState, setUploadState] = useState<UploadState>({ kind: "idle" });
@@ -127,6 +145,24 @@ export function HeroVehicleScanner() {
   };
 
   const effectiveScanStep = reduceMotion ? 4 : scanStep;
+  const handleVehicleBounds = useCallback(
+    (bounds: ScreenBounds) => {
+      vehicleBoxLeft.set(`${bounds.left}%`);
+      vehicleBoxTop.set(`${bounds.top}%`);
+      vehicleBoxWidth.set(`${bounds.width}%`);
+      vehicleBoxHeight.set(`${bounds.height}%`);
+      vehicleTagLeft.set(`${bounds.left}%`);
+      vehicleTagTop.set(`${Math.max(1.5, bounds.top - 6)}%`);
+    },
+    [
+      vehicleBoxHeight,
+      vehicleBoxLeft,
+      vehicleBoxTop,
+      vehicleBoxWidth,
+      vehicleTagLeft,
+      vehicleTagTop,
+    ],
+  );
 
   return (
     <section
@@ -146,8 +182,17 @@ export function HeroVehicleScanner() {
             className="inline-flex items-center gap-3 text-sm font-medium tracking-[-0.02em] outline-none focus-visible:ring-2 focus-visible:ring-accent"
             href="#hero"
           >
-            <span className="grid size-8 place-items-center border border-border bg-surface/80 font-mono text-[10px] text-accent">
-              VA
+            <span
+              aria-hidden="true"
+              className="relative block size-10 overflow-hidden bg-background"
+            >
+              <Image
+                alt=""
+                className="scale-[1.62] object-cover"
+                fill
+                sizes="40px"
+                src="/images/vehicle-analysis-logo.png"
+              />
             </span>
             Vehicle Analysis Lab
           </a>
@@ -236,11 +281,14 @@ export function HeroVehicleScanner() {
             </div>
 
             <div aria-hidden="true" className="absolute inset-0">
-              <ThreeDVehicleScene reduceMotion={reduceMotion} />
+              <ThreeDVehicleScene
+                onBoundsChange={handleVehicleBounds}
+                reduceMotion={reduceMotion}
+              />
             </div>
             <p className="sr-only">
-              A brand-neutral graphite vehicle is scanned for its vehicle region, license plate,
-              OCR text, and body type.
+              A black BMW M5 sedan is scanned for its vehicle region and body type. Plate scanning
+              is deferred until a plate model is added.
             </p>
 
             {!reduceMotion && effectiveScanStep < 4 ? (
@@ -256,8 +304,14 @@ export function HeroVehicleScanner() {
 
             <motion.div
               animate={{ opacity: effectiveScanStep >= 1 ? 1 : 0 }}
-              className="pointer-events-none absolute left-[14%] top-[31%] z-10 h-[38%] w-[72%] border border-primary-text/45"
+              className="pointer-events-none absolute z-10 border border-primary-text/45"
               initial={false}
+              style={{
+                height: vehicleBoxHeight,
+                left: vehicleBoxLeft,
+                top: vehicleBoxTop,
+                width: vehicleBoxWidth,
+              }}
             >
               <span className="absolute -left-px -top-px size-2 border-l-2 border-t-2 border-primary-text" />
               <span className="absolute -right-px -top-px size-2 border-r-2 border-t-2 border-primary-text" />
@@ -265,20 +319,12 @@ export function HeroVehicleScanner() {
               <span className="absolute -bottom-px -right-px size-2 border-b-2 border-r-2 border-primary-text" />
             </motion.div>
 
-            <motion.div
-              animate={{ opacity: effectiveScanStep >= 2 ? 1 : 0 }}
-              className="pointer-events-none absolute left-[66%] top-[57%] z-10 h-[5%] min-h-4 w-[12%] border border-accent"
-              initial={false}
-            />
-
-            <DetectionTag active={effectiveScanStep >= 1} className="left-[14%] top-[25%]">
+            <DetectionTag
+              active={effectiveScanStep >= 1}
+              className=""
+              style={{ left: vehicleTagLeft, top: vehicleTagTop }}
+            >
               01 / Vehicle detected
-            </DetectionTag>
-            <DetectionTag active={effectiveScanStep >= 2} className="left-[66%] top-[63.5%] text-accent">
-              02 / Plate
-            </DetectionTag>
-            <DetectionTag active={effectiveScanStep >= 3} className="right-[8%] top-[42%]">
-              OCR / 34 VAL 026
             </DetectionTag>
             <DetectionTag active={effectiveScanStep >= 4} className="bottom-[14%] left-[15%]">
               Body / Sedan

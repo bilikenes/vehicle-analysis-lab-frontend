@@ -116,3 +116,15 @@ Their default visual identity must not define the product.
 
 Reason:
 The project has an approved custom Automotive × Technical × Editorial design language.
+
+---
+
+## ADR-010 — The Hero uses the user-provided BMW M5 asset
+
+Status: Accepted
+
+Decision:
+Use the user-provided black BMW M5 GLB in the Home Hero, retaining its manufacturer badges and styling. Do not show plate or OCR Hero indications until a plate mesh is available.
+
+Reason:
+The user explicitly selected their own vehicle model for the product identity. The Hero remains an analysis demonstration, without configurator controls.

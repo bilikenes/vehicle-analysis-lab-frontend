@@ -24,6 +24,9 @@ describe("ModelVisionComparison", () => {
     expect(screen.getByTestId("model-view-layer")).toHaveStyle({
       clipPath: "inset(0 32% 0 0)",
     });
+    expect(screen.queryByText("Vehicle crop")).not.toBeInTheDocument();
+    expect(screen.queryByText("Plate crop")).not.toBeInTheDocument();
+    expect(screen.queryByText("OCR resolved")).not.toBeInTheDocument();
   });
 
   it("supports precise keyboard adjustment", () => {

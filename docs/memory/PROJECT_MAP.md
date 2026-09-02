@@ -59,14 +59,17 @@ src/styles/globals.css   Tailwind import and semantic design tokens
 Home Hero implementation:
 
 ```text
-src/components/home/hero-vehicle-scanner.tsx  Hero composition, scanner, and upload interaction
-src/components/home/three-d-vehicle-scene.tsx Lazy WebGL scene and isolated interim vehicle
-src/components/home/scene-fallback.tsx        Non-WebGL/loading fallback
+src/components/home/hero-vehicle-scanner.tsx    Hero composition, scanner, and upload interaction
+src/components/home/three-d-vehicle-scene.tsx   Lazy WebGL scene and isolated interim vehicle
+src/components/home/scene-fallback.tsx          Non-WebGL/loading fallback
 src/components/home/model-vision-comparison.tsx Reality / Model View comparison interaction
-src/components/home/human-in-loop-demo.tsx    Plate-box and OCR correction demo
-src/features/upload/vehicle-image.ts          Client-side supported MIME boundary
-public/images/model-vision-vehicle.png         Project-owned real-world comparison photo
-public/og.png                                  Home social preview
+src/components/home/vehicle-inference-overlay.tsx Wireframe mesh overlay and inference scan animation
+src/components/home/human-in-loop-demo.tsx      Plate-box and OCR correction demo
+src/features/upload/vehicle-image.ts            Client-side supported MIME boundary
+public/images/model-vision-vehicle.png          Project-owned real-world comparison photo
+public/images/vehicle-analysis-logo.png         Primary brand mark used in the Home header
+public/models/bmw-m5-hero.glb                   Optimized BMW M5 Hero WebGL asset
+public/og.png                                   Home social preview
 ```
 
 Reserved implementation boundaries:

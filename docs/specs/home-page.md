@@ -81,17 +81,16 @@ The Hero will use a **3D vehicle**, not a flat 2D vehicle image.
 
 Recommended visual character:
 
-- Unbranded / generic premium vehicle
-- Preferably sedan-like for a clean silhouette
+- User-provided black BMW M5 sedan; manufacturer badges and distinctive styling are intentionally visible
 - Matte graphite or dark neutral material
 - Dark studio environment
 - Soft controlled key light
 - Subtle ground reflection if performance allows
-- No visible manufacturer logos
-- No highly recognizable grille/headlamp signature from a real brand
 - No configurator-like controls for paint, wheels, doors, etc.
 
 The 3D vehicle exists to visualize analysis. It must not imply that the site is selling or configuring cars.
+
+The first production asset intentionally has no plate mesh. Until a plate is added, the Hero omits plate and OCR scan indications; the 2D Model View and Human-in-the-Loop sections continue to demonstrate plate analysis.
 
 ## 5.3 Initial scanner sequence — Locked
 
@@ -102,11 +101,9 @@ Suggested visual sequence:
 1. Vehicle is already present in the dark studio scene.
 2. Scanner line or scanning plane passes across the vehicle.
 3. Vehicle detection indication appears.
-4. Plate detection indication appears.
-5. OCR result appears.
-6. Body-type result appears.
-7. The scanner finishes.
-8. The Hero transitions into a calm interactive state.
+4. Body-type result appears.
+5. The scanner finishes.
+6. The Hero transitions into a calm interactive state.
 
 The goal is to demonstrate the analysis concept without creating constant motion.
 

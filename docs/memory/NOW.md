@@ -46,15 +46,15 @@ Complete the integration-independent Home experience with the return-to-upload C
 
 ## Next Milestone
 
-Complete the remaining Home sections and replace the isolated interim 3D vehicle when the approved production GLB becomes available.
+Complete the remaining Home sections, including the return-to-upload CTA and compact footer.
 
 ## Active Work
 
 The general execution plan is active at `docs/plans/active/frontend-implementation-plan.md`.
 
-The Home Hero is implemented with a lazy client-loaded React Three Fiber scene, a one-time scanner sequence, restrained pointer response, reduced-motion behavior, an accessible file picker, drag/drop feedback, and controlled MIME validation. It currently uses an isolated project-owned interim 3D vehicle because the production GLB is pending.
+The Home Hero is implemented with a lazy client-loaded React Three Fiber scene, a one-time scanner sequence, restrained pointer response, reduced-motion behavior, an accessible file picker, drag/drop feedback, and controlled MIME validation. It now loads an optimized, user-provided black BMW M5 GLB; plate and OCR Hero indications are deferred until a plate mesh is added.
 
-The Model View section is implemented with an original real-world vehicle photograph, a direct draggable comparison divider, vehicle and plate overlays, OCR/body-type interpretation, and pointer, touch, and keyboard support.
+The Model View section is implemented with an original real-world vehicle photograph, a direct draggable comparison divider, animated vehicle and plate overlays with a one-time inference scan sequence, a surface-topology wireframe mesh that reveals progressively behind the scan line, OCR/body-type interpretation, reduced-motion behavior, and pointer, touch, and keyboard support.
 
 The Human in the Loop demo is implemented with an intentionally imperfect plate box and OCR value, direct move/resize interaction, keyboard adjustments, a live plate crop, reset behavior, validation, and restrained feedback confirmation.
 

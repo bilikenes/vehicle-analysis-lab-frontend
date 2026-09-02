@@ -2,18 +2,42 @@
 
 import { GripVertical } from "lucide-react";
 import Image from "next/image";
-import { type ChangeEvent, type KeyboardEvent, useState } from "react";
+import { type ChangeEvent, type KeyboardEvent, useEffect, useRef, useState } from "react";
+import { VehicleInferenceOverlay } from "./vehicle-inference-overlay";
 
 const MIN_REVEAL = 8;
 const MAX_REVEAL = 92;
 const KEYBOARD_STEP = 3;
-
 export function clampReveal(value: number) {
   return Math.min(MAX_REVEAL, Math.max(MIN_REVEAL, value));
 }
 
 export function ModelVisionComparison() {
   const [reveal, setReveal] = useState(52);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [isInView, setIsInView] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.15 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const modelVisibility = reveal / 100;
 
   const updateReveal = (event: ChangeEvent<HTMLInputElement>) => {
     setReveal(clampReveal(Number(event.target.value)));
@@ -40,6 +64,7 @@ export function ModelVisionComparison() {
 
   return (
     <section
+      ref={sectionRef}
       aria-labelledby="model-vision-heading"
       className="relative border-t border-border bg-surface px-5 py-24 sm:px-8 sm:py-28 lg:px-12 lg:py-36"
       id="model-view"
@@ -76,7 +101,7 @@ export function ModelVisionComparison() {
             />
 
             <div
-              className="absolute inset-0 z-10 overflow-hidden"
+              className="model-view-active absolute inset-0 z-10 overflow-hidden"
               data-testid="model-view-layer"
               style={{ clipPath: `inset(0 ${100 - reveal}% 0 0)` }}
             >
@@ -91,29 +116,12 @@ export function ModelVisionComparison() {
               <div className="absolute inset-0 bg-background/16" />
               <div className="model-scan-grid absolute inset-0 opacity-40" />
 
-              <div className="absolute left-[13.5%] top-[27%] h-[58%] w-[72%] border border-primary-text/75">
-                <span className="absolute -left-px -top-px size-3 border-l-2 border-t-2 border-primary-text" />
-                <span className="absolute -right-px -top-px size-3 border-r-2 border-t-2 border-primary-text" />
-                <span className="absolute -bottom-px -left-px size-3 border-b-2 border-l-2 border-primary-text" />
-                <span className="absolute -bottom-px -right-px size-3 border-b-2 border-r-2 border-primary-text" />
-                <span className="absolute -top-7 left-0 bg-background/88 px-2 py-1 font-mono text-[8px] uppercase tracking-[0.16em] text-primary-text backdrop-blur-sm sm:text-[9px]">
-                  Vehicle / Sedan
-                </span>
-              </div>
+              <VehicleInferenceOverlay
+                modelVisibility={modelVisibility}
+                reducedMotion={reducedMotion}
+                isInView={isInView}
+              />
 
-              <div className="absolute left-[20%] top-[50.5%] h-[6%] min-h-4 w-[8%] border-2 border-accent">
-                <span className="absolute -bottom-7 right-0 whitespace-nowrap bg-background/90 px-2 py-1 font-mono text-[8px] uppercase tracking-[0.14em] text-accent backdrop-blur-sm sm:text-[9px]">
-                  Plate / CV 2048
-                </span>
-              </div>
-
-              <div className="absolute bottom-[8%] left-[4%] hidden items-center gap-5 border border-border bg-background/86 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-secondary-text backdrop-blur-sm sm:flex">
-                <span>Vehicle crop</span>
-                <span className="h-3 w-px bg-border" />
-                <span>Plate crop</span>
-                <span className="h-3 w-px bg-border" />
-                <span className="text-primary-text">OCR resolved</span>
-              </div>
             </div>
 
             <div className="pointer-events-none absolute left-4 top-4 z-20 bg-background/82 px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-[0.18em] text-primary-text backdrop-blur-sm sm:left-5 sm:top-5">
