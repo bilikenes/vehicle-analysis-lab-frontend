@@ -56,7 +56,7 @@ The Home Hero is implemented with a lazy client-loaded React Three Fiber scene, 
 
 The Model View section is implemented with an original real-world vehicle photograph, a direct draggable comparison divider, animated vehicle and plate overlays with a one-time inference scan sequence, a surface-topology wireframe mesh that reveals progressively behind the scan line, OCR/body-type interpretation, reduced-motion behavior, and pointer, touch, and keyboard support.
 
-The Human in the Loop demo is implemented with an intentionally imperfect plate box and OCR value, direct move/resize interaction, keyboard adjustments, a live plate crop, reset behavior, validation, and restrained feedback confirmation.
+The Human in the Loop demo now uses a project-owned black sedan photo with a deliberately imperfect plate box and `34 ABC 12B` model read. Its compact review workflow combines direct move/resize interaction, a crop card, constrained Turkish-plate OCR correction, reset behavior, validation, and restrained feedback confirmation.
 
 ## Do Not Revisit Without Explicit Reason
 

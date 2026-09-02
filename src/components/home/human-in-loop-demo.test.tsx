@@ -1,7 +1,11 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
-import { HumanInLoopDemo, transformPlateBox } from "./human-in-loop-demo";
+import {
+  HumanInLoopDemo,
+  normalizeTurkishPlateInput,
+  transformPlateBox,
+} from "./human-in-loop-demo";
 
 afterEach(cleanup);
 
@@ -27,6 +31,12 @@ describe("transformPlateBox", () => {
   });
 });
 
+describe("normalizeTurkishPlateInput", () => {
+  it("formats supported Turkish plate segments and removes invalid characters", () => {
+    expect(normalizeTurkishPlateInput("34aBc-128!")).toBe("34 ABC 128");
+  });
+});
+
 describe("HumanInLoopDemo", () => {
   it("accepts a plate-box and OCR correction as feedback", () => {
     render(<HumanInLoopDemo />);
@@ -35,10 +45,10 @@ describe("HumanInLoopDemo", () => {
       screen.getByRole("group", { name: /plate bounding box/i }),
       { key: "ArrowRight" },
     );
-    fireEvent.change(screen.getByLabelText("OCR result"), {
-      target: { value: "CV 2048" },
+    fireEvent.change(screen.getByLabelText("Your correction"), {
+      target: { value: "34abc128" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Save correction" }));
+    fireEvent.click(screen.getByRole("button", { name: "Add correction" }));
 
     expect(screen.getByText("Feedback added")).toBeInTheDocument();
   });
@@ -46,11 +56,11 @@ describe("HumanInLoopDemo", () => {
   it("restores the intentionally imperfect model result", () => {
     render(<HumanInLoopDemo />);
 
-    fireEvent.change(screen.getByLabelText("OCR result"), {
-      target: { value: "CV 2048" },
+    fireEvent.change(screen.getByLabelText("Your correction"), {
+      target: { value: "34 ABC 128" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Reset" }));
+    fireEvent.click(screen.getByRole("button", { name: "Reset correction demo" }));
 
-    expect(screen.getByLabelText("OCR result")).toHaveValue("CV 204B");
+    expect(screen.getByLabelText("Your correction")).toHaveValue("34 ABC 12B");
   });
 });

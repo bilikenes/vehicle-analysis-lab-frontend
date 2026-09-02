@@ -294,7 +294,7 @@ The section should begin with a deliberately imperfect but believable result.
 Example:
 
 - Plate bounding box is slightly misaligned.
-- OCR reads `34 ABC 128` when the image actually shows `34 ABC 123`.
+- OCR reads `34 ABC 12B` when the image actually shows `34 ABC 128`.
 
 The error should look realistic. It should not be absurd or obviously fabricated.
 
@@ -308,7 +308,10 @@ The error should look realistic. It should not be absurd or obviously fabricated
 
 ### OCR
 
-- OCR result is editable.
+- Present the model read and the user's correction as distinct compact rows.
+- The model's uncertain character may receive a restrained amber emphasis.
+- Use one constrained, plate-format editing field rather than a generic large input or character-per-box controls.
+- The field should normalize uppercase Turkish plate segments and reject unsupported characters as the user types.
 - User changes the incorrect character(s).
 
 After a valid correction, show a restrained success state such as:
@@ -344,6 +347,8 @@ Important:
 - Interactions must genuinely work in the demo.
 - Handles should be obvious enough to discover, but visually restrained.
 - The section should not expose the full complexity of the real editing page.
+- The right side should read as a focused review workflow: a short review prompt, the plate crop, model read, user correction, and one refined feedback action.
+- Do not show selected-object panels, live badges, keyboard instructions, or image-overlay helper labels.
 
 ---
 

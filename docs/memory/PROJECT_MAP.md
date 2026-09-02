@@ -67,6 +67,7 @@ src/components/home/vehicle-inference-overlay.tsx Wireframe mesh overlay and inf
 src/components/home/human-in-loop-demo.tsx      Plate-box and OCR correction demo
 src/features/upload/vehicle-image.ts            Client-side supported MIME boundary
 public/images/model-vision-vehicle.png          Project-owned real-world comparison photo
+public/images/human-in-loop-vehicle.png         Project-owned Human in the Loop correction photo
 public/images/vehicle-analysis-logo.png         Primary brand mark used in the Home header
 public/models/bmw-m5-hero.glb                   Optimized BMW M5 Hero WebGL asset
 public/og.png                                   Home social preview

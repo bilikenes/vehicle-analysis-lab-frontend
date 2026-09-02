@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, CornerDownRight, Move, RotateCcw } from "lucide-react";
+import { ArrowUpRight, Check, RotateCcw } from "lucide-react";
 import Image from "next/image";
 import {
   type ChangeEvent,
@@ -20,9 +20,10 @@ export type PlateBox = {
 
 export type BoxTransformMode = "move" | "nw" | "se";
 
-const MODEL_BOX: PlateBox = { x: 18.2, y: 47.4, width: 11.5, height: 9.2 };
-const MODEL_OCR = "CV 204B";
-const CORRECT_OCR = "CV 2048";
+const HUMAN_IN_LOOP_IMAGE = "/images/human-in-loop-vehicle.png";
+const MODEL_BOX: PlateBox = { x: 56.1, y: 60.8, width: 14.8, height: 7.4 };
+const MODEL_OCR = "34 ABC 12B";
+const CORRECT_OCR = "34 ABC 128";
 const MIN_BOX_WIDTH = 6;
 const MIN_BOX_HEIGHT = 4.5;
 
@@ -32,6 +33,19 @@ function clamp(value: number, minimum: number, maximum: number) {
 
 function roundGeometry(value: number) {
   return Math.round(value * 100) / 100;
+}
+
+export function normalizeTurkishPlateInput(value: string) {
+  const compact = value.toUpperCase().replace(/[^0-9A-Z]/g, "");
+  const cityCode = compact.slice(0, 2).replace(/\D/g, "").slice(0, 2);
+  const remainder = compact.slice(cityCode.length);
+  const letters = remainder.match(/^[A-Z]{0,3}/)?.[0] ?? "";
+  const digits = remainder
+    .slice(letters.length)
+    .replace(/\D/g, "")
+    .slice(0, 4);
+
+  return [cityCode, letters, digits].filter(Boolean).join(" ");
 }
 
 export function transformPlateBox(
@@ -91,19 +105,18 @@ export function HumanInLoopDemo() {
   const activeTransform = useRef<ActiveTransform | null>(null);
   const [box, setBox] = useState<PlateBox>(MODEL_BOX);
   const [ocr, setOcr] = useState(MODEL_OCR);
-  const [message, setMessage] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
   const boxEdited = !boxesMatch(box, MODEL_BOX);
-  const ocrEdited = ocr !== MODEL_OCR;
+  const hasCorrectOcr = ocr === CORRECT_OCR;
 
   const cropStyle = useMemo(() => {
     const horizontalPosition = (box.x / (100 - box.width)) * 100;
     const verticalPosition = (box.y / (100 - box.height)) * 100;
 
     return {
-      aspectRatio: `${box.width * 1731} / ${box.height * 909}`,
-      backgroundImage: "url('/images/model-vision-vehicle.png')",
+      aspectRatio: `${box.width * 1672} / ${box.height * 941}`,
+      backgroundImage: `url('${HUMAN_IN_LOOP_IMAGE}')`,
       backgroundPosition: `${horizontalPosition}% ${verticalPosition}%`,
       backgroundRepeat: "no-repeat",
       backgroundSize: `${10000 / box.width}% auto`,
@@ -112,7 +125,6 @@ export function HumanInLoopDemo() {
 
   const markChanged = () => {
     setSaved(false);
-    setMessage(null);
   };
 
   const beginTransform = (
@@ -187,31 +199,21 @@ export function HumanInLoopDemo() {
 
   const updateOcr = (event: ChangeEvent<HTMLInputElement>) => {
     markChanged();
-    setOcr(event.target.value.toUpperCase());
+    setOcr(normalizeTurkishPlateInput(event.target.value));
   };
 
   const resetDemo = () => {
     setBox(MODEL_BOX);
     setOcr(MODEL_OCR);
     setSaved(false);
-    setMessage(null);
   };
 
   const saveCorrection = () => {
-    if (!boxEdited) {
-      setSaved(false);
-      setMessage("Move or resize the plate box first.");
-      return;
-    }
-
-    if (ocr.replaceAll(" ", "") !== CORRECT_OCR.replaceAll(" ", "")) {
-      setSaved(false);
-      setMessage("Check the plate text in the crop preview.");
+    if (!boxEdited || !hasCorrectOcr) {
       return;
     }
 
     setSaved(true);
-    setMessage(null);
   };
 
   return (
@@ -236,7 +238,7 @@ export function HumanInLoopDemo() {
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-6 text-secondary-text sm:text-base sm:leading-7">
-            Correct the plate region and OCR result. Your feedback completes the loop.
+            Fix the result. Improve the model.
           </p>
         </div>
 
@@ -244,22 +246,22 @@ export function HumanInLoopDemo() {
           <div className="border-b border-border p-3 sm:p-5 lg:border-b-0 lg:border-r">
             <div
               ref={stageRef}
-              className="relative aspect-[1731/909] overflow-hidden bg-background select-none"
+              className="relative aspect-[1672/941] overflow-hidden bg-background select-none"
               onPointerCancel={finishTransform}
               onPointerMove={continueTransform}
               onPointerUp={finishTransform}
             >
               <Image
-                alt="Graphite sedan with an editable license plate region"
+                alt="Black sedan with an editable license plate region"
                 className="pointer-events-none object-cover"
                 fill
                 sizes="(max-width: 1024px) 100vw, 850px"
-                src="/images/model-vision-vehicle.png"
+                src={HUMAN_IN_LOOP_IMAGE}
               />
               <div className="pointer-events-none absolute inset-0 bg-background/10" />
 
               <div
-                aria-label="Plate bounding box. Drag to move. Use arrow keys to nudge."
+                aria-label="Plate bounding box"
                 className="absolute touch-none cursor-move border-2 border-accent bg-accent/8 outline-none focus-visible:ring-2 focus-visible:ring-primary-text focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 data-testid="editable-plate-box"
                 onKeyDown={(event) => applyKeyboardTransform("move", event)}
@@ -273,10 +275,6 @@ export function HumanInLoopDemo() {
                 }}
                 tabIndex={0}
               >
-                <span className="pointer-events-none absolute -top-7 left-0 whitespace-nowrap bg-background/90 px-2 py-1 font-mono text-[8px] uppercase tracking-[0.14em] text-accent sm:text-[9px]">
-                  Plate / adjust
-                </span>
-
                 <button
                   aria-label="Resize plate box from top left"
                   className="absolute -left-5 -top-5 grid size-11 touch-none cursor-nwse-resize place-items-center outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
@@ -297,102 +295,98 @@ export function HumanInLoopDemo() {
                 </button>
               </div>
 
-              <div className="pointer-events-none absolute bottom-3 left-3 hidden items-center gap-2 bg-background/86 px-2.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.14em] text-secondary-text sm:flex">
-                <Move aria-hidden="true" size={12} />
-                Drag box · Resize corners
-              </div>
             </div>
           </div>
 
-          <aside aria-label="Correction controls" className="flex flex-col p-5 sm:p-7 lg:p-8">
-            <div className="flex items-center justify-between border-b border-border pb-4">
-              <div>
-                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-secondary-text">
-                  Selected object
-                </p>
-                <p className="mt-1 text-sm font-medium">License plate</p>
-              </div>
-              <span className="border border-accent/50 px-2 py-1 font-mono text-[8px] uppercase tracking-[0.14em] text-accent">
-                Needs review
-              </span>
+          <aside aria-label="Correction workflow" className="relative flex flex-col p-5 sm:p-7 lg:p-8">
+            <div className="border-b border-border pb-5">
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-accent">
+                Review the result
+              </p>
+              <p className="mt-2 max-w-xs text-sm leading-6 text-secondary-text">
+                Adjust the plate region or correct the text.
+              </p>
             </div>
 
             <div className="mt-6">
-              <div className="mb-3 flex items-center justify-between">
-                <label className="font-mono text-[9px] uppercase tracking-[0.16em] text-secondary-text">
-                  Live plate crop
-                </label>
-                <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-secondary-text">
-                  {boxEdited ? "Edited" : "Model"}
-                </span>
-              </div>
+              <p className="mb-3 font-mono text-[9px] uppercase tracking-[0.16em] text-secondary-text">
+                Plate crop
+              </p>
               <div
                 aria-label="Live crop of the selected plate region"
-                className="min-h-20 w-full border border-border bg-elevated-surface bg-cover"
+                className="relative min-h-24 w-full overflow-hidden border border-accent/35 bg-elevated-surface bg-cover shadow-[0_0_32px_rgba(255,181,71,0.08)] transition-shadow duration-300"
                 data-testid="plate-crop-preview"
                 role="img"
                 style={cropStyle}
-              />
+              >
+                <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-accent/70" />
+              </div>
+            </div>
+
+            <div className="mt-7 border-y border-border py-5">
+              <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-secondary-text">
+                Model read
+              </p>
+              <div className="mt-2 flex items-center gap-2 font-mono text-lg tracking-[0.12em] text-secondary-text">
+                <span>{MODEL_OCR.slice(0, -1)}</span>
+                <span className="border-b border-accent pb-0.5 text-accent">{MODEL_OCR.at(-1)}</span>
+                <span className="ml-auto font-sans text-xs tracking-normal text-secondary-text">Low confidence</span>
+              </div>
             </div>
 
             <div className="mt-6">
-              <label
-                className="font-mono text-[9px] uppercase tracking-[0.16em] text-secondary-text"
-                htmlFor="demo-ocr"
-              >
-                OCR result
+              <label className="font-mono text-[9px] uppercase tracking-[0.16em] text-secondary-text" htmlFor="demo-ocr">
+                Your correction
               </label>
-              <div className="mt-3 flex items-center border border-border bg-elevated-surface focus-within:border-accent">
-                <span className="border-r border-border px-3 font-mono text-[9px] text-secondary-text">
-                  OCR
-                </span>
+              <div className="mt-3 border-b border-border bg-elevated-surface/45 px-4 pb-2 pt-3 transition-colors focus-within:border-accent">
                 <input
-                  className="min-w-0 flex-1 bg-transparent px-3 py-3 font-mono text-base tracking-[0.08em] text-primary-text outline-none"
+                  aria-describedby="plate-format-hint"
+                  className="w-full bg-transparent font-mono text-lg tracking-[0.12em] text-primary-text outline-none placeholder:text-secondary-text/50"
                   id="demo-ocr"
+                  inputMode="text"
                   maxLength={10}
                   onChange={updateOcr}
+                  placeholder="34 ABC 128"
                   spellCheck={false}
                   value={ocr}
                 />
               </div>
-              <p className="mt-2 text-xs leading-5 text-secondary-text">
-                The model confused the final character. Compare it with the crop.
+              <p className="mt-2 text-xs leading-5 text-secondary-text" id="plate-format-hint">
+                Turkish plate format is applied as you type.
               </p>
             </div>
 
-            <div aria-live="polite" className="mt-5 min-h-6">
+            <div aria-live="polite" className="mt-5 min-h-11">
               {saved ? (
-                <p className="flex items-center gap-2 text-sm text-success">
+                <div className="border border-success/35 bg-success/8 px-3 py-2.5 text-success">
+                  <p className="flex items-center gap-2 text-sm">
                   <Check aria-hidden="true" size={15} />
-                  Feedback added
-                </p>
+                    Feedback added <span className="font-mono text-xs">+1</span>
+                  </p>
+                  <p className="mt-1 pl-6 text-xs text-secondary-text">This helps improve the model.</p>
+                </div>
               ) : null}
-              {message ? <p className="text-sm text-accent">{message}</p> : null}
             </div>
 
-            <div className="mt-auto flex flex-col gap-3 pt-5 sm:flex-row">
+            <div className="mt-auto flex items-center gap-3 pt-5">
               <button
-                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 bg-accent px-4 text-sm font-semibold text-background outline-none transition-colors hover:bg-primary-text focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:cursor-not-allowed disabled:opacity-45"
-                disabled={!boxEdited && !ocrEdited}
+                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 border border-accent bg-accent/10 px-4 text-sm font-semibold text-accent outline-none transition-colors hover:bg-accent hover:text-background focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:cursor-not-allowed disabled:border-border disabled:bg-transparent disabled:text-secondary-text"
+                disabled={!boxEdited || !hasCorrectOcr}
                 onClick={saveCorrection}
                 type="button"
               >
-                Save correction
-                <CornerDownRight aria-hidden="true" size={15} />
+                Add correction
+                <ArrowUpRight aria-hidden="true" size={15} />
               </button>
               <button
-                className="inline-flex min-h-11 items-center justify-center gap-2 border border-border px-4 text-sm text-secondary-text outline-none transition-colors hover:border-primary-text hover:text-primary-text focus-visible:ring-2 focus-visible:ring-primary-text"
+                aria-label="Reset correction demo"
+                className="grid size-11 place-items-center border border-border text-secondary-text outline-none transition-colors hover:border-primary-text hover:text-primary-text focus-visible:ring-2 focus-visible:ring-primary-text"
                 onClick={resetDemo}
                 type="button"
               >
                 <RotateCcw aria-hidden="true" size={14} />
-                Reset
               </button>
             </div>
-
-            <p className="mt-5 border-t border-border pt-4 font-mono text-[8px] uppercase leading-5 tracking-[0.13em] text-secondary-text">
-              Keyboard: arrows move · Shift + arrows move faster · Focus a corner to resize
-            </p>
           </aside>
         </div>
       </div>
