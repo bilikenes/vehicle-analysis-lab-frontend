@@ -73,6 +73,27 @@ public/models/bmw-m5-hero.glb                   Optimized BMW M5 Hero WebGL asse
 public/og.png                                   Home social preview
 ```
 
+Analysis / Results implementation:
+
+```text
+src/app/analysis/[analysisId]/page.tsx                  Route boundary and fixture scenario selection
+src/components/analysis/analysis-page-client.tsx        Reveal orchestration and page states
+src/components/analysis/analysis-utility-bar.tsx        Status, quota, downloads, and New Analysis action
+src/components/analysis/editorial-analysis-workspace.tsx Editorial header, composition, and inspection footer
+src/components/analysis/editorial-side-rail.tsx         Canonical desktop artboard rail and prototype marker
+src/components/analysis/original-image-stage.tsx        Coordinate-safe source image and quiet bounding boxes
+src/components/analysis/extraction-sequence.tsx         Numbered vehicle/plate extraction modules
+src/components/analysis/extraction-frame-variants.ts    Shared clipped vehicle/plate fragment geometry
+src/components/analysis/trace-connector-layer.tsx       Responsive source-to-result SVG traces
+src/components/analysis/extraction-animation-layer.tsx  Responsive source-to-result crop motion
+src/components/analysis/new-analysis-upload-state.tsx   In-context repeat-upload state
+src/features/analysis/analysis-view-model.ts             UI-facing temporary analysis model
+src/features/analysis/analysis-fixture.ts                Explicit non-authoritative fixture provider
+src/features/analysis/project-bounding-box.ts            Normalized geometry and crop presentation helpers
+src/features/analysis/reveal-state.ts                    Ordered reveal state model
+e2e/analysis.spec.ts                                     Analysis, quota, failure, and mobile flow coverage
+```
+
 Reserved implementation boundaries:
 
 ```text
@@ -81,7 +102,7 @@ src/components/home/     Home-specific visual components
 src/components/analysis/ Analysis / Results components
 src/components/editor/   Edit Results components
 src/features/upload/     Upload feature logic
-src/features/analysis/   Analysis feature logic
+src/features/analysis/   Analysis presentation model, fixture, reveal, and geometry logic
 src/features/editor/     Editor feature logic
 src/lib/api/             API clients
 src/lib/schemas/         Zod schemas

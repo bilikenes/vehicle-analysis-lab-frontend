@@ -4,7 +4,7 @@
 **Document status:** Source of truth for the Analysis / Results Page  
 **Product language:** English  
 **Initial theme:** Dark  
-**Design direction:** Premium structured-extraction experience
+**Design direction:** Editorial Exploded View structured-extraction experience
 
 ---
 
@@ -27,7 +27,7 @@ The page should make the analysis process feel tangible: vehicle and plate crops
 - The page is designed for **one vehicle result**.
 - The backend may detect multiple vehicles internally, but it will return/use the highest-confidence vehicle for this first version.
 - The user's **original uploaded image is the primary visual focus**.
-- Vehicle and plate bounding boxes are visible by default.
+- Vehicle and plate bounding boxes are visible during extraction and on trace-back focus/tap. They are hidden in the completed resting state.
 - Bounding boxes must be thin and premium, not thick debug rectangles.
 - The user cannot edit results directly on this page.
 - All actual editing occurs on the separate Edit Results page.
@@ -68,38 +68,35 @@ The design should create a feeling of “the system understood this image and ex
 
 The original image remains the largest element.
 
-Preferred desktop hierarchy:
+The 1672 × 941 reference artboard is the canonical completed desktop composition. At that viewport, its spatial relationships are authoritative rather than general inspiration:
 
-- Main/left area: original image with bounding boxes
-- Supporting/right area: extracted result stack/modules
-- Top utility area: page state + remaining analyses + Download + New Analysis
-- Clear `Edit Results` action after completion
+- A 153 px editorial rail anchors the left edge below and within the utility shell.
+- The headline, supporting copy, source image, `01–04` modules, overview copy, dot matrix, guidance, and Edit Results action follow the reference artboard positions and hierarchy.
+- The source image remains the dominant element and uses an asymmetrically clipped outer presentation shell.
+- The image element and bbox coordinate plane remain flat, rectangular, and undistorted inside that shell.
 
-The exact grid can change with viewport size, but the original image must remain dominant.
+Responsive layouts are derived from this canonical composition rather than independently redesigned. The editorial header must not push the source image below the fold at the 1366 × 768 target.
 
 ## 4.2 Result modules
 
-Result modules should not feel like heavy dashboard cards.
+Result modules form one asymmetrical Editorial Exploded View sequence and must not feel like heavy dashboard cards. The primary asymmetry comes from the geometry of the extracted panels themselves, not only from staggered placement.
 
-They should be visually lightweight, potentially using:
+Use one coherent three-variant frame system:
 
-- Thin borders
-- Slight surface elevation
-- Compact labels
-- Strong image previews
-- Clean whitespace
+- Vehicle Crop: dominant clipped fragment with a cut corner and restrained slanted edge
+- Plate Crop: compact chamfered strip
+- OCR Result: open, segmented corner frame
 
-Core results:
+Body Type remains a lightweight typographic node and may use one restrained ghost character. Do not use random polygons, plain rectangular crop cards, or heavy HUD-style edges. The true source image and bbox plane remain rectangular and coordinate-safe.
 
-### Vehicle
-- Vehicle crop
-- Body type
+Locked sequence:
 
-### Plate
-- Plate crop
-- OCR result
+1. `01 VEHICLE CROP`
+2. `02 PLATE CROP`
+3. `03 BODY TYPE`
+4. `04 OCR RESULT`
 
-The information architecture may visually group them into two families rather than four disconnected cards.
+Vehicle Crop and Body Type form the vehicle family. Plate Crop and OCR Result form the plate family. Thin responsive SVG connectors trace each module to the correct source bbox. Connectors remain quiet at rest and strengthen on hover, focus, or tap.
 
 ---
 
@@ -144,7 +141,18 @@ Important behavior:
 
 This creates the key “pixels → structured result” moment.
 
-## 5.4 Phase 4 — Plate detection
+## 5.4 Phase 4 — Body classification
+
+Body type appears in direct relationship with the settled vehicle crop.
+
+Example:
+
+- Label: `BODY TYPE`
+- Value: `Sedan`
+
+The body result should feel derived from the vehicle crop rather than appearing as an unrelated card.
+
+## 5.5 Phase 5 — Plate detection
 
 After vehicle extraction, the plate bbox becomes the active focus.
 
@@ -154,7 +162,7 @@ Recommended:
 - Plate bbox appears using Amber Accent.
 - Background/other overlays can subtly reduce emphasis.
 
-## 5.5 Phase 5 — Plate extraction
+## 5.6 Phase 6 — Plate extraction
 
 The plate crop visually detaches from the plate bbox and travels to its result location.
 
@@ -165,7 +173,7 @@ Again:
 
 The motion language should match Vehicle extraction but can be slightly quicker because the element is smaller.
 
-## 5.6 Phase 6 — OCR resolve
+## 5.7 Phase 7 — OCR resolve
 
 OCR result appears in direct relationship with the plate crop.
 
@@ -178,17 +186,6 @@ Example concept:
 
 This must remain subtle. Do not turn it into a hacker/terminal scramble effect.
 
-## 5.7 Phase 7 — Body classification
-
-Body type appears in direct relationship with the vehicle crop.
-
-Example:
-
-- Label: `BODY TYPE`
-- Value: `Sedan`
-
-The body result should feel derived from the vehicle crop rather than appearing as an unrelated card.
-
 ## 5.8 Phase 8 — Analysis complete
 
 After all outputs have settled:
@@ -196,7 +193,7 @@ After all outputs have settled:
 - Show a restrained `Analysis complete` status.
 - Activate/fully reveal utility actions if they were intentionally delayed.
 - Transition to calm inspection mode.
-- Bounding boxes remain visible but become visually thin/quiet.
+- Bounding boxes disappear in the completed resting state and return for relevant focus/tap trace-back.
 - No scanner loops.
 - No repeated result animations.
 
@@ -244,8 +241,8 @@ Once the reveal sequence completes, the page becomes intentionally calm.
 In this mode:
 
 - Original image remains dominant.
-- Vehicle bbox remains visible.
-- Plate bbox remains visible.
+- Vehicle and plate bboxes are hidden at rest.
+- The relevant bbox reappears when its result family receives hover, keyboard focus, or tap focus.
 - Crops remain in final result positions.
 - OCR and body type are stable.
 - No looping extraction motion.
@@ -448,11 +445,11 @@ If a result later requires a low-confidence warning, that can be introduced as a
 
 ---
 
-# 13. Result Stack concept — Accepted
+# 13. Editorial extraction sequence — Locked
 
-The extracted outputs can visually behave like a structured result stack rather than a disconnected collection of cards.
+The extracted outputs behave as one numbered editorial sequence rather than a stack of cards.
 
-Example hierarchy:
+Semantic families:
 
 ### VEHICLE
 - Vehicle crop
@@ -462,13 +459,9 @@ Example hierarchy:
 - Plate crop
 - OCR
 
-The extraction animation can visually “build” this stack from the original image.
+The extraction animation visually builds this sequence from the original image.
 
-This supports the conceptual message:
-
-> **From pixels to structured data.**
-
-This phrase can be used as internal design language or potentially as light UI copy if it fits the final composition.
+The completed canonical header uses the eyebrow `VISION TO DATA` and the two-line headline `Editorial` / `Exploded View`. The utility bar carries the functional `Analysis complete` status. The supporting copy reads `We don't just detect. We deconstruct for clarity.`
 
 ---
 
@@ -592,7 +585,7 @@ The page should explicitly support the following states.
 ## 17.2 Complete
 
 - Calm inspection mode
-- Bounding boxes visible
+- Bounding boxes hidden at rest and revealed for trace-back focus/tap
 - Results settled
 - Download active
 - Edit Results active
@@ -672,17 +665,17 @@ Reference: `vehicle_analysis_color_palette.png`
 
 ## 20.1 Desktop
 
-Ideal experience:
+At 1672 × 941:
 
-- Original image large on left/main area
-- Result stack on right
+- Match the canonical reference artboard spatially, including the 153 px rail, source-image placement, headline hierarchy, extraction fragment positions, overview, dot matrix, and lower actions.
+- Keep the original image large on the left and the editorial extraction sequence on the right.
 - Utility actions remain visible
 - Extraction animations can travel spatially from image to results
 
 ## 20.2 Tablet
 
 - Original image remains dominant
-- Result stack can move below or beside depending on aspect ratio
+- Extraction sequence moves below the source image and can use two columns
 - Extraction paths should be recalculated based on actual DOM positions
 - Avoid hard-coded animation coordinates
 
@@ -693,7 +686,7 @@ Mobile requires a different motion composition.
 Recommended:
 
 - Original image first
-- Result stack below
+- Numbered extraction sequence below
 - Vehicle/plate crop extraction can move downward rather than sideways
 - Focus/trace-back can use tap/focus instead of hover
 - Utility actions may collapse into a compact toolbar/menu
@@ -790,18 +783,18 @@ Potential frontend structure:
     - `QuotaIndicator`
     - `DownloadResultsMenu`
     - `NewAnalysisAction`
-  - `AnalysisWorkspace`
+  - `EditorialAnalysisWorkspace`
+    - `EditorialSideRail`
     - `OriginalImageStage`
       - `VehicleBBox`
       - `PlateBBox`
       - `FocusOverlay`
-    - `ResultStack`
-      - `VehicleResult`
-        - `VehicleCrop`
-        - `BodyType`
-      - `PlateResult`
-        - `PlateCrop`
-        - `OCRResult`
+    - `TraceConnectorLayer`
+    - `ExtractionSequence`
+      - `VehicleCropModule`
+      - `PlateCropModule`
+      - `BodyTypeModule`
+      - `OCRResultModule`
   - `ExtractionAnimationLayer`
   - `EditResultsAction`
   - `NewAnalysisUploadState`
@@ -816,10 +809,12 @@ The Analysis / Results Page can be considered aligned with this specification wh
 
 - The original uploaded image is the dominant visual.
 - Exactly one primary vehicle result is presented.
-- Vehicle and plate bboxes are visible by default.
+- Vehicle and plate bboxes are hidden in completed/resting state and revealed during extraction or relevant trace-back focus/tap.
 - Bboxes use the agreed thin premium visual language.
 - Vehicle crop visually extracts from the vehicle bbox.
 - Plate crop visually extracts from the plate bbox.
+- Vehicle and plate crops use the approved non-rectangular fragment geometry.
+- OCR uses an open segmented frame rather than a full rectangular card.
 - OCR appears in relationship with the plate crop.
 - Body type appears in relationship with the vehicle crop.
 - The initial sequence transitions into a calm inspection state.
@@ -835,6 +830,7 @@ The Analysis / Results Page can be considered aligned with this specification wh
 - Quota-exhausted state preserves result inspection/download.
 - English is used for product UI/copy.
 - Reduced-motion users retain full functionality.
+- At 1672 × 941, the finished composition is recognizably the same spatial design as the approved reference artboard rather than a loose reinterpretation.
 
 ---
 

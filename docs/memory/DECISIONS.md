@@ -128,3 +128,15 @@ Use the user-provided black BMW M5 GLB in the Home Hero, retaining its manufactu
 
 Reason:
 The user explicitly selected their own vehicle model for the product identity. The Hero remains an analysis demonstration, without configurator controls.
+
+---
+
+## ADR-011 — Analysis desktop uses a canonical 1672 × 941 editorial artboard
+
+Status: Accepted
+
+Decision:
+Treat the approved 1672 × 941 Analysis reference as the canonical desktop spatial composition. Preserve its 153 px editorial rail, dominant clipped source presentation, irregular extraction fragments, and lower action placement. Keep the actual image and bbox plane flat and coordinate-safe; hide bboxes only in the completed resting state and reveal them for extraction or trace-back focus.
+
+Reason:
+The approved result must read as the same authored editorial composition, not as a dashboard or a loose design-language interpretation. Responsive variants derive from this canonical artboard.

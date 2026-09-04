@@ -1,10 +1,10 @@
 # Current Project State
 
-Last updated: 2026-09-01
+Last updated: 2026-09-04
 
 ## Current Phase
 
-Phase 1 — Application Foundation is complete. Phase 3 — Home Experience is in progress while Phase 2 live-integration inputs remain pending.
+Phase 1 — Application Foundation is complete. The fixture-driven Phase 5 — Analysis / Results experience is implemented while Phase 2 live-integration inputs remain pending.
 
 ## Product Definition Status
 
@@ -16,7 +16,7 @@ Completed and approved:
 
 ## Current Objective
 
-Complete the integration-independent Home experience with the return-to-upload CTA and compact footer.
+Review the fixture-driven Analysis / Results experience and replace its isolated fixture boundary when the backend contract becomes available.
 
 ## Approved Page Flow
 
@@ -46,7 +46,7 @@ Complete the integration-independent Home experience with the return-to-upload C
 
 ## Next Milestone
 
-Complete the remaining Home sections, including the return-to-upload CTA and compact footer.
+Connect the Analysis / Results data boundary to the backend contract when available; until then, keep fixture behavior explicit and non-authoritative.
 
 ## Active Work
 
@@ -57,6 +57,8 @@ The Home Hero is implemented with a lazy client-loaded React Three Fiber scene, 
 The Model View section is implemented with an original real-world vehicle photograph, a direct draggable comparison divider, animated vehicle and plate overlays with a one-time inference scan sequence, a surface-topology wireframe mesh that reveals progressively behind the scan line, OCR/body-type interpretation, reduced-motion behavior, and pointer, touch, and keyboard support.
 
 The Human in the Loop demo now uses a project-owned black sedan photo with a deliberately imperfect plate box and `34 ABC 12B` model read. Its compact review workflow combines direct move/resize interaction, a crop card, constrained Turkish-plate OCR correction, reset behavior, validation, and restrained feedback confirmation.
+
+The Analysis / Results route now presents its fixture-driven result as a 1672 × 941 canonical Editorial Exploded View artboard: a 153 px editorial rail, dominant coordinate-safe source image in a clipped presentation shell, spatially matched irregular extraction fragments, responsive SVG traces, source-to-destination crop motion, completed-rest bbox concealment with focus/tap trace-back, reduced-motion behavior, downloads, Edit Results navigation, in-context New Analysis, quota handling, and a source-preserving failure state. Responsive layouts derive from the canonical desktop composition. Fixture status remains visibly disclosed; uploaded images and quota changes remain prototype behavior rather than live inference or backend enforcement.
 
 ## Do Not Revisit Without Explicit Reason
 
